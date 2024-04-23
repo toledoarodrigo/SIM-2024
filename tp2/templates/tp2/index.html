@@ -1,0 +1,160 @@
+{% extends "tp2/base.html" %}
+
+{% block content %}
+<div class="container">
+  <h3>TP2</h3>
+  <form action="{% url 'tp2:get_results' %}" method="post" class="row g-5">
+    {% csrf_token %}
+    <div class="col-8">
+      <div class="row card card-body shadow h-100">
+        <div class="col-12">
+          <h4>Distribucion:</h4>
+        </div>
+        <div class="col mb-3" style="max-height: 70px;">
+          <div class="form-check d-block">
+            <input class="form-check-input" onclick="onDistributionClick(this)" type="radio" name="distribution"
+              id="uniform" value="uniform">
+            <label class="form-check-label" for="uniform">
+              Uniforme
+            </label>
+          </div>
+          <div class="form-check d-block">
+            <input class="form-check-input" onclick="onDistributionClick(this)" type="radio" name="distribution"
+              id="normal" value="normal">
+            <label class="form-check-label" for="normal">
+              Normal
+            </label>
+          </div>
+          <div class="form-check d-block">
+            <input class="form-check-input" onclick="onDistributionClick(this)" type="radio" name="distribution"
+              id="exponential" value="exponential">
+            <label class="form-check-label" for="exponential">
+              Exponencial negativa
+            </label>
+          </div>
+        </div>
+        <div class="d-none" id="uniformContainer">
+          <div class="col-6 col-sm-6 col-md-4 mb-3 form-floating">
+            <input type="number" class="form-control form-control-sm" name="uniform_args" id="lower_limit" placeholder="A" step="0.001">
+            <label for="lower_limit" class="form-label">A</label>
+          </div>
+
+          <div class="col-6 col-sm-6 col-md-4 mb-3 form-floating">
+            <input type="number" class="form-control form-control-sm" name="uniform_args" id="upper_limit" placeholder="B" step="0.001" min=0>
+            <label for="upper_limit" class="form-label">B</label>
+          </div>
+        </div>
+        <div class="d-none" id="expContainer">
+          <div class="col-12 mb-3 form-floating">
+            <select class="form-select" id="variableExpSelect" aria-label="Variable a usar">
+              <option selected>Seleccione una</option>
+              <option value=1>Media</option>
+              <option value=2>Lambda</option>
+            </select>
+            <label for="variableExpSelect">Variable a usar</label>
+          </div>
+          <div class="col-12 mb-3 form-floating d-none" id="meanExpContainer">
+            <input type="number" step="0.0001" class="form-control form-control-sm" name="exponential_args" id="exponential_mean" placeholder="Media">
+            <label for="exponential_mean" class="form-label">Media</label>
+          </div>
+          <div class="col-12 mb-3 form-floating d-none" id="lambdaExpContainer">
+            <input type="number" step="0.0001" class="form-control form-control-sm" name="exponential_lambda" id="exponential_lambda" placeholder="Lambda" min=0>
+            <label for="exponential_mean" class="form-label">Lambda</label>
+          </div>
+        </div>
+        <div class="d-none" id="normalContainer">
+          <div class="col-12 mb-3 form-floating">
+            <input type="number" step="0.0001" class="form-control form-control-sm" name="normal_args" id="normal_mean" placeholder="Media">
+            <label for="normal_mean" class="form-label">Media</label>
+          </div>
+          <div class="col-12 mb-3 form-floating">
+            <input type="number" step="0.0001" class="form-control form-control-sm" name="normal_args" id="normal_desv" placeholder="Deviacion" min=0>
+            <label for="normal_desv" class="form-label">Desviacion</label>
+          </div>
+        </div>
+        <div class="col-12 mt-auto text-end">
+          <button type="submit" class="btn btn-outline-primary">Generar</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="row card card-body shadow h-100">
+        <div class="col-12">
+          <h4>Parametros generales</h4>
+        </div>
+        <div class="col-12 mb-3 form-floating">
+          <input type="number" class="form-control form-control-sm" name="sample_size" id="sample_size"
+            placeholder="Tamaño de la muestra" value="1000000" min=0>
+          <label for="sample_size" class="form-label">Tamaño de la muestra</label>
+        </div>
+        <div class="col-12 mb-3 form-floating">
+          <input type="number" class="form-control form-control-sm" name="decimal_places" id="decimal_places"
+            placeholder="Decimales" value=4 min=0 max=15>
+          <label for="upper_limit" class="form-label">Decimales</label>
+        </div>
+        <div class="col-12 mb-3 form-floating">
+          <select class="form-select" name="intervals_amount" id="intervals_amount" aria-label="Cantidad de intervalos">
+            <option value=5 selected>5</option>
+            <option value=10>10</option>
+            <option value=15>15</option>
+            <option value=20>20</option>
+          </select>
+          <label for="intervals_amount">Cantidad de intervalos</label>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script lang="js">
+  const uniformA = document.getElementById("lower_limit");
+  const uniformB = document.getElementById("upper_limit");
+
+  const onUniformAChange = (event) => {
+    uniformB.setAttribute('min', +uniformA.value + 1)
+  }
+  uniformA.addEventListener('change', onUniformAChange)
+
+  const lambdaExpContainer = document.getElementById("lambdaExpContainer");
+  const meanExpContainer = document.getElementById("meanExpContainer");
+  const variableExpSelect = document.getElementById('variableExpSelect');
+  const contMapping = {
+    '1': meanExpContainer,
+    '2': lambdaExpContainer,
+  }
+
+  variableExpSelect.addEventListener('change', (event) => {
+    Object.values(contMapping).forEach((container) => {
+      if (container.classList.contains('d-none')){
+        return;
+      }
+      container.classList.add('d-none');
+    })
+    contMapping[event.target.value].classList.remove("d-none");
+    
+  })
+
+
+  const onDistributionClick = (event) => {
+    document.querySelector("#uniformContainer").setAttribute("class", "d-none")
+    document.querySelector("#expContainer").setAttribute("class", "d-none")
+    document.querySelector("#normalContainer").setAttribute("class", "d-none")
+    
+    if (event.value === "uniform") {
+      document.querySelector("#uniformContainer").setAttribute("class", "")
+      return;
+    }
+    if (event.value === "exponential") {
+      document.querySelector("#expContainer").setAttribute("class", "")
+      return;
+    }
+    if (event.value === "normal") {
+      document.querySelector("#normalContainer").setAttribute("class", "")
+      return;
+    }
+
+  }
+</script>
+{% endblock %}

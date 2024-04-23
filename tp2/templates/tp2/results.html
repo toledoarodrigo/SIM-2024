@@ -1,0 +1,109 @@
+{% extends 'tp2/base.html' %}
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <h2>TP 2</h2>
+  </div>
+</div>
+<div class="container card card-body shadow my-3 py-4 px-5">
+  <div class="row">
+    <div class="col"><h4>Histograma de frecuencias</h4></div>
+    <div class="col-auto">
+      <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#frequenciesOffcanvas" aria-controls="frequenciesOffcanvas">Tabla de frecuencias</button>
+    </div>
+    <div class="col-12">
+      <img src="data:image/png;base64, {{graph}}" id='frequenciesChart' width="1000" height="500"></canvas>
+    </div>
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="frequenciesOffcanvas" aria-labelledby="frequenciesTitle">
+      <div class="offcanvas-header">
+        <h4 class="offcanvas-title" id="frequenciesTitle">Tabla de frecuencias</h4>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Intervalo</th>
+              <th scope="col">Frecuencia esperada</th>
+              <th scope="col">Frecuencia observada</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for interval, value in frequencies %}
+            <tr>
+              <th scope="row">{{interval.0|floatformat:4}} - {{interval.1|floatformat:4}}</th>
+              <td>{{value.0|floatformat:4}}</td>
+              <td>{{value.1}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col"><h4>Numeros generados</h4></div>
+    <div class="col-auto">
+      <span class="my-auto" id="pageLegend"></span>
+      <div class="d-block">
+        <button class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;&laquo;</button>
+        <button id="prevBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;</button>
+        <button id="nextBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(2)">&raquo;</button>
+        <button id="lastBtn" class="btn btn-sm btn-outline-secondary">&raquo;&raquo;</button>
+      </div>
+    </div>
+    <div class="col-12 overflow-scroll" style="max-height: 500px;" id="tableContainer">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Iteracion</th>
+            <th scope="col">Numero generado</th>
+          </tr>
+        </thead>
+        <tbody id='results_table'>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const items = JSON.parse('{{history_str|safe}}');
+  let showFrom = 0;
+  let showTo = 5000;
+  let pageSize = 5000;
+  let pagesAmount = Math.ceil(items.length/pageSize);
+  document.getElementById("lastBtn").setAttribute("onclick", `displayItems(${pagesAmount})`);
+
+  const displayItems = (page) => {
+    if (page === undefined) {
+      return
+    }
+    const table = document.getElementById('results_table');
+    showFrom = pageSize * (page - 1);
+    showTo = pageSize * page;
+    const paginatedItems = items.slice(showFrom, showTo);
+    results = "";
+    paginatedItems.forEach((generated_number, i) => {
+      results += `<tr>
+        <th scope="row">${i + showFrom}</th>
+        <td>${generated_number}</td>
+      </tr>`
+    });
+    table.innerHTML = results;
+    document.getElementById("pageLegend").innerHTML = `Pagina ${page} de ${pagesAmount} paginas`;
+    document.getElementById("nextBtn").setAttribute("onclick", `displayItems(${page < pagesAmount ? page + 1 : page})`);
+    document.getElementById("prevBtn").setAttribute("onclick", `displayItems(${page === 1 ? undefined : page - 1})`);
+    document.getElementById("tableContainer").scrollTop = 0;
+  }
+
+  displayItems(1)
+
+</script>
+{% endblock %}
