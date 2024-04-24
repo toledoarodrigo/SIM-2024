@@ -38,16 +38,15 @@ def get_series_results(request):
     handler.run()
 
     number_set = handler._state
+    graph_handler = GraphHandler(number_set, int(data['intervals_amount']))
+    graph = graph_handler.generate_historgram()
 
     freq_handler = FrequencyHandler(
         int(data['intervals_amount']), number_set,
         handler.min_value, handler.max_value, distribution_generator,
-        int(data['sample_size']))
+        int(data['sample_size']), graph_handler.sets_count)
     freq_handler.build_sets()
-    freq_handler.count_items()
 
-    graph_handler = GraphHandler(number_set, int(data['intervals_amount']))
-    graph = graph_handler.generate_historgram()
 
     import json
     return render(request, 'tp2/results.html', {

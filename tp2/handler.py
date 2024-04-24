@@ -1,8 +1,6 @@
 import base64
 import io
 
-from numpy import round
-
 
 class Handler():
     @staticmethod
@@ -17,7 +15,7 @@ class Handler():
         self._state = []
 
     def get_number(self):
-        return round(self.generator.get_next_number(), decimals=4)
+        return float(f"{self.generator.get_next_number():.4f}")
 
     def run(self):
         self._state = []
@@ -58,9 +56,14 @@ class FrequencyHandler():
 
     def __init__(
             self, step_amount, number_set, min_value, max_value,
-            number_generator, sample_size):
+            number_generator, sample_size, steps_frequency):
         self.step_amount = step_amount
         self.steps_frequency = [0] * self.step_amount
+        for i in range(self.step_amount):
+            if len(steps_frequency) < i:
+                self.steps_frequency[i] = 0
+                continue
+            self.steps_frequency[i] = steps_frequency[i]
         self.number_set = number_set
         self.min_value = min_value
         self.max_value = max_value
@@ -77,26 +80,30 @@ class FrequencyHandler():
         lower_limit = self.min_value
         upper_limit = lower_limit + step_size
         self.sets_definition = []
-        while upper_limit <= self.max_value:
+        for i in range(self.step_amount):
+            if upper_limit == self.max_value:
+                upper_limit += 0.00001
             step = (lower_limit, upper_limit)
             self.sets_definition.append(step)
             lower_limit = upper_limit
             upper_limit = lower_limit + step_size
 
-    def count_items(self):
-        for number in self.number_set:
-            for i in range(len(self.sets_definition)):
-                (lower, upper) = self.sets_definition[i]
-                if upper <= number:
-                    continue
-                # Is lower than the upper limit, count one for this set
-                self.steps_frequency[i] += 1
+    # def count_items(self):
+    #     for number in self.number_set:
+    #         for i in range(len(self.sets_definition)):
+    #             (lower, upper) = self.sets_definition[i]
+    #             if upper < number:
+    #                 continue
+    #             # Is lower than the upper limit, count one for this set
+    #             self.steps_frequency[i] += 1
+    #             break
 
 
 class GraphHandler():
     def __init__(self, number_set, step_amount):
         self.number_set = number_set
         self.step_amount = step_amount
+        self.sets_count = None
 
     def generate_historgram(self):
         import matplotlib
@@ -106,6 +113,7 @@ class GraphHandler():
         fig, ax = plt.subplots()
         fig.set_figwidth(15)
         counts, bins, patches = plt.hist(self.number_set, self.step_amount)
+        self.sets_count = counts
         ax.set_xticks(bins, [f'{x:.4f}' for x in bins], rotation=60)
         plt.bar_label(patches)
         bytes_stream = io.BytesIO()

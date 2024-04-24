@@ -16,7 +16,7 @@
       <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#frequenciesOffcanvas" aria-controls="frequenciesOffcanvas">Tabla de frecuencias</button>
     </div>
     <div class="col-12">
-      <img src="data:image/png;base64, {{graph}}" id='frequenciesChart' width="1000" height="500"></canvas>
+      <img src="data:image/png;base64, {{graph}}" id='frequenciesChart' width="1000" height="700"></canvas>
     </div>
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="frequenciesOffcanvas" aria-labelledby="frequenciesTitle">
       <div class="offcanvas-header">
@@ -92,7 +92,7 @@
     results = "";
     paginatedItems.forEach((generated_number, i) => {
       results += `<tr>
-        <th scope="row">${i + showFrom}</th>
+        <th scope="row">${i + showFrom + 1}</th>
         <td>${generated_number}</td>
       </tr>`
     });

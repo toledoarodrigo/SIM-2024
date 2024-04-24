@@ -3,8 +3,8 @@ from generator.random import CustomRandom
 
 class Uniforme():
     def __init__(self, a, b, **kwargs):
-        self.lower_limit = int(a)
-        self.upper_limit = int(b)
+        self.lower_limit = float(a)
+        self.upper_limit = float(b)
         self.random_generator = CustomRandom()
 
     def get_next_number(self):

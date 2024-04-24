@@ -18,10 +18,12 @@ class Exponencial():
         return 1/self.mean
 
     def __init__(self, mean=None, frequency=None):
-        assert (mean is not None and frequency is None) \
-            or (frequency is not None and mean is None)
-        self._mean = int(mean) if mean is not None else None
-        self._frequency = int(frequency) if frequency is not None else None
+        self._frequency = None
+        self._mean = None
+        if mean != "":
+            self._mean = float(mean)
+        if frequency != "":
+            self._frequency = float(frequency)
         self.random_generator = CustomRandom()
 
     def get_next_number(self):
