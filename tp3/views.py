@@ -45,19 +45,6 @@ class StateItem():
 
 
 class StockSimulation():
-    """
-    - Demanda semanal -> Calcular
-    - Checkear llegada de pedido
-    - Calcular cuantas llegan rotas
-    - Actualizar stock
-    - Contabilizar stock entrante (si es que llego un pedido)
-    - Descontar stock actual
-    - Checkear stock faltante -> Calcular costo por faltantes
-    - Checkear punto de reposicion
-    - Calcular fecha de llegada de pedido
-    - Calcular costo de pedido
-    """
-
     def __init__(
         self, history_callback, stock_cost, request_cost, missing_cost,
         initial_stock, request_amount, request_breakpoint,
