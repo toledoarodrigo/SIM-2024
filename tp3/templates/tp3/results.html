@@ -6,46 +6,70 @@
       <h2>TP 3</h2>
     </div>
   </div>
-  <div class="container card card-body shadow my-3 py-4 px-5">
-    <div class="row">
-      <div class="col"><h4>Numeros generados</h4></div>
-      <div class="col-auto">
-        <span class="my-auto" id="pageLegend"></span>
-        <div class="d-block">
-          <button class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;&laquo;</button>
-          <button id="prevBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;</button>
-          <button id="nextBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(2)">&raquo;</button>
-          <button id="lastBtn" class="btn btn-sm btn-outline-secondary">&raquo;&raquo;</button>
+  <div class="container-fluid">
+    <div class="card card-body shadow my-3 py-4 px-5">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col"><h4>Numeros generados</h4></div>
+              <div class="col-auto">
+                <span class="my-auto" id="pageLegend"></span>
+                <div class="d-block">
+                  <button class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;&laquo;</button>
+                  <button id="prevBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;</button>
+                  <button id="nextBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(2)">&raquo;</button>
+                  <button id="lastBtn" class="btn btn-sm btn-outline-secondary">&raquo;&raquo;</button>
+                </div>
+              </div>
+              <div class="col-12 overflow-scroll" style="max-height: 500px;" id="tableContainer">
+                <table class="table">
+                  <thead>
+                    <tr>
+                        <th scope="col">Semana</th>
+                        <th scope="col">Random demanda</th>
+                        <th scope="col">Demanda</th>
+                        <th scope="col">Random Demora Pedido</th>
+                        <th scope="col">Demora Pedido</th>
+                        <th scope="col">Ingreso Proximo Pedido</th>
+                        <th scope="col">Random Items Rotos</th>
+                        <th scope="col">Items Rotos</th>
+                        <th scope="col">Stock Entrante</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Costo de Mantenimiento</th>
+                        <th scope="col">Costo de Pedido</th>
+                        <th scope="col">Stock Faltante</th>
+                        <th scope="col">Costo por Faltantes</th>
+                        <th scope="col">Costo Total de Mantenimiento</th>
+                        <th scope="col">Costo Total de Pedido</th>
+                        <th scope="col">Costo Total por Faltantes</th>
+                        <th scope="col">Costo Total Agregado</th>
+                    </tr>
+                  </thead>
+                  <tbody id='results_table'>
+                  </tbody>
+                </table>
+              </div>
+            </div>
         </div>
-      </div>
-      <div class="col-12 overflow-scroll" style="max-height: 500px;" id="tableContainer">
-        <table class="table">
-          <thead>
-            <tr>
-                <th scope="col">Semana</th>
-                <th scope="col">Random demanda</th>
-                <th scope="col">Demanda</th>
-                <th scope="col">Random Demora Pedido</th>
-                <th scope="col">Demora Pedido</th>
-                <th scope="col">Ingreso Proximo Pedido</th>
-                <th scope="col">Random Items Rotos</th>
-                <th scope="col">Items Rotos</th>
-                <th scope="col">Stock Entrante</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Costo de Mantenimiento</th>
-                <th scope="col">Costo de Pedido</th>
-                <th scope="col">Stock Faltante</th>
-                <th scope="col">Costo por Faltantes</th>
-                <th scope="col">Costo Total de Mantenimiento</th>
-                <th scope="col">Costo Total de Pedido</th>
-                <th scope="col">Costo Total por Faltantes</th>
-                <th scope="col">Costo Total</th>
-            </tr>
-          </thead>
-          <tbody id='results_table'>
-          </tbody>
-        </table>
-      </div>
+    </div>
+
+    <div class="card card-body shadow my-3 py-4 px-5">
+        <div class="container-fluid">
+            <div class="row">
+                <h4>Costos finales</h4>
+                <div class="col-3"">
+                    <span><strong>Total de Almacenamiento:</strong> $</span><span id="total-stock-cost"></span>
+                </div>
+                <div class="col-3"">
+                    <span><strong>Total de Pedido:</strong> $</span><span id="total-restock-cost"></span>
+                </div>
+                <div class="col-3"">
+                    <span><strong>Total por Faltantes:</strong> $</span><span id="total-missing-cost"></span>
+                </div>
+                <div class="col-3"">
+                    <span><strong>Total Acumulado:</strong> $</span><span id="total-cost"></span>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
 {% endblock %}
@@ -58,6 +82,10 @@
   let pageSize = 1000;
   let pagesAmount = Math.ceil(items.length/pageSize);
   document.getElementById("lastBtn").setAttribute("onclick", `displayItems(${pagesAmount})`);
+    document.getElementById("total-stock-cost").innerHTML = items.at(-1).aggregated_maintenance_cost
+    document.getElementById("total-restock-cost").innerHTML = items.at(-1).aggregated_stock_request_cost
+    document.getElementById("total-missing-cost").innerHTML = items.at(-1).aggregated_missing_stock_cost
+    document.getElementById("total-cost").innerHTML = items.at(-1).aggregated_total_costs
 
   const displayItems = (page) => {
     if (page === undefined) {

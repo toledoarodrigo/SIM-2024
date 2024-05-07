@@ -115,6 +115,7 @@ class StockSimulation():
                 next_state.used_delivery_stock = None
                 next_state.next_delivery = None
                 next_state.delivery_delay = None
+                next_state.random_delivery_delay = None
 
             if (next_state.stock < clients):
                 next_state.missing_items = clients - next_state.stock
@@ -130,7 +131,7 @@ class StockSimulation():
             ):
                 delivery_delay, delivery_delay_random = \
                     self.delay_distribution.get_number_and_random()
-                next_state.delivery_delay_random = delivery_delay_random
+                next_state.random_delivery_delay = delivery_delay_random
                 next_state.delivery_delay = delivery_delay
                 next_state.next_delivery = next_state.week + delivery_delay
                 next_state.requested_restock_count += 1
