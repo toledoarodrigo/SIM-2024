@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <h2>TP 3</h2>
+    </div>
+  </div>
+  <div class="container card card-body shadow my-3 py-4 px-5">
+    <div class="row">
+      <div class="col"><h4>Numeros generados</h4></div>
+      <div class="col-auto">
+        <span class="my-auto" id="pageLegend"></span>
+        <div class="d-block">
+          <button class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;&laquo;</button>
+          <button id="prevBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;</button>
+          <button id="nextBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(2)">&raquo;</button>
+          <button id="lastBtn" class="btn btn-sm btn-outline-secondary">&raquo;&raquo;</button>
+        </div>
+      </div>
+      <div class="col-12 overflow-scroll" style="max-height: 500px;" id="tableContainer">
+        <table class="table">
+          <thead>
+            <tr>
+                <th scope="col">Semana</th>
+                <th scope="col">Random demanda</th>
+                <th scope="col">Demanda</th>
+                <th scope="col">Random Demora Pedido</th>
+                <th scope="col">Demora Pedido</th>
+                <th scope="col">Ingreso Proximo Pedido</th>
+                <th scope="col">Random Items Rotos</th>
+                <th scope="col">Items Rotos</th>
+                <th scope="col">Stock Entrante</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Costo de Mantenimiento</th>
+                <th scope="col">Costo de Pedido</th>
+                <th scope="col">Stock Faltante</th>
+                <th scope="col">Costo por Faltantes</th>
+                <th scope="col">Costo Total de Mantenimiento</th>
+                <th scope="col">Costo Total de Pedido</th>
+                <th scope="col">Costo Total por Faltantes</th>
+                <th scope="col">Costo Total</th>
+            </tr>
+          </thead>
+          <tbody id='results_table'>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const items = JSON.parse('{{history|safe}}');
+  let showFrom = 0;
+  let showTo = 1000;
+  let pageSize = 1000;
+  let pagesAmount = Math.ceil(items.length/pageSize);
+  document.getElementById("lastBtn").setAttribute("onclick", `displayItems(${pagesAmount})`);
+
+  const displayItems = (page) => {
+    if (page === undefined) {
+      return
+    }
+    const table = document.getElementById('results_table');
+    showFrom = pageSize * (page - 1);
+    showTo = pageSize * page;
+    const paginatedItems = items.slice(showFrom, showTo);
+    results = "";
+    paginatedItems.forEach((item, i) => {
+      results += `<tr>
+        <th scope="row">${item.week}</th>
+        <td>${item.random_clients ? item.random_clients.toString() : "-"}</td>
+        <td>${item.clients !== null ? item.clients : "-"}</td>
+        <td>${item.random_delivery_delay ? item.random_delivery_delay.toString() : "-"}</td>
+        <td>${item.delivery_delay !== null ? item.delivery_delay : "-"}</td>
+        <td>${item.next_delivery ? item.next_delivery : "-"}</td>
+        <td>${item.random_useless_stock ? item.random_useless_stock.toString() : "-"}</td>
+        <td>${item.useless_amount !== null ? item.useless_amount : "-"}</td>
+        <td>${item.used_delivery_stock ? item.used_delivery_stock : "-"}</td>
+        <td>${item.stock ? item.stock : "-"}</td>
+        <td>${item.maintenance_cost ? item.maintenance_cost : "-"}</td>
+        <td>${item.stock_request_cost ? item.stock_request_cost : "-"}</td>
+        <td>${item.missing_items ? item.missing_items : "-"}</td>
+        <td>${item.missing_stock_cost ? item.missing_stock_cost : "-"}</td>
+        <td>${item.aggregated_maintenance_cost ? item.aggregated_maintenance_cost : "-"}</td>
+        <td>${item.aggregated_stock_request_cost ? item.aggregated_stock_request_cost : "-"}</td>
+        <td>${item.aggregated_missing_stock_cost ? item.aggregated_missing_stock_cost : "-"}</td>
+        <td>${item.aggregated_total_costs ? item.aggregated_total_costs : "-"}</td>
+      </tr>`
+    });
+    table.innerHTML = results;
+    document.getElementById("pageLegend").innerHTML = `Pagina ${page} de ${pagesAmount} paginas`;
+    document.getElementById("nextBtn").setAttribute("onclick", `displayItems(${page < pagesAmount ? page + 1 : page})`);
+    document.getElementById("prevBtn").setAttribute("onclick", `displayItems(${page === 1 ? undefined : page - 1})`);
+    document.getElementById("tableContainer").scrollTop = 0;
+  }
+
+  displayItems(1)
+
+</script>
+{% endblock %}

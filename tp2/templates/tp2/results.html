@@ -1,7 +1,4 @@
 {% extends 'tp2/base.html' %}
-{% block extra_head %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -76,8 +73,8 @@
 <script>
   const items = JSON.parse('{{history_str|safe}}');
   let showFrom = 0;
-  let showTo = 5000;
-  let pageSize = 5000;
+  let showTo = 500;
+  let pageSize = 500;
   let pagesAmount = Math.ceil(items.length/pageSize);
   document.getElementById("lastBtn").setAttribute("onclick", `displayItems(${pagesAmount})`);
 

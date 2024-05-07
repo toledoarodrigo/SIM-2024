@@ -1,0 +1,246 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h3>TP3</h3>
+    <form action="{% url 'tp3:simulate' %}" method="post" class="row g-5 mb-5" id="data-form">
+        {% csrf_token %}
+        <div class="col-6">
+            <div class="row card card-body shadow h-100">
+              <div class="col-12">
+                <h4>Demanda</h4>
+              </div>
+              <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Cantidad
+                            </th>
+                            <th scope="col">
+                                Probabilidad (En %)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">0</th>
+                            <td>
+                                <input class="form-control" type="number" name="clients-amounts"
+                                  id="zero-clients" value="50" min="0" step="1" max="100">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>
+                                <input class="form-control" type="number" name="clients-amounts"
+                                  id="one-clients" value="15" min="0" step="1" max="100">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>
+                                <input class="form-control" type="number" name="clients-amounts"
+                                  id="two-clients" value="25" min="0" step="1" max="100">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>
+                                <input class="form-control" type="number" name="clients-amounts"
+                                  id="three-clients" value="10" min="0" step="1" max="100">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row"><strong>Total</strong></th>
+                            <td>
+                                <input class="form-control" type="number" id="total-clients-amounts-prob" value="100" min="100" max="100">
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row card card-body shadow h-100">
+              <div class="col-12">
+                <h4>Tiempo de entrega</h4>
+              </div>
+              <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Semanas
+                            </th>
+                            <th scope="col">
+                                Frecuencia relativa
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>
+                                <input class="form-control" type="number" name="delay"
+                                  id="one-week-delay" value="0.3" min="0" step="0.01" max="1">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>
+                                <input class="form-control" type="number" name="delay"
+                                  id="two-week-delay" value="0.4" min="0" step="0.01" max="1">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>
+                                <input class="form-control" type="number" name="delay"
+                                  id="three-week-delay" value="0.3" min="0" step="0.01" max="1">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row"><strong>Total</strong></th>
+                            <td>
+                                <input class="form-control" type="number" id="total-delay-prob" value="1" min="1" max="1">
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row card card-body shadow">
+                <div class="d-flex flex-wrap mt-2">
+                    <div class="col-6 pe-1">
+                        <h4>Costos</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="stock-cost" id="stock-cost"
+                                      placeholder="De Tenencia ($ por Unidad)" value="30" min=0>
+                                    <label for="stock-cost">De Tenencia ($ por Unidad)</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="request-cost" id="request-cost"
+                                      placeholder="De Pedido ($)" value="200" min=0>
+                                    <label for="request-cost">De Pedido ($)</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="missing-cost" id="missing-cost"
+                                      placeholder="De Agotamiento ($ por unidad)" value="50" min=0>
+                                    <label for="missing-cost">De Agotamiento ($ por unidad)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 ps-1">
+                        <h4>Variables de Stock</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="initial-stock" id="initial-stock"
+                                      placeholder="Inicial" value="7" min=0>
+                                    <label for="initial-stock">Inicial</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="request-amount" id="request-amount"
+                                      placeholder="Cantidad por Pedido" value="6" min=0 readonly>
+                                    <label for="request-amount">Cantidad por Pedido</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="request-breakpoint" id="request-breakpoint"
+                                      placeholder="Punto de Reposicion" value="2" min=0>
+                                    <label for="request-breakpoint">Punto de Reposicion</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <h4>Variables de simulacion</h4>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="time" id="time"
+                                      placeholder="Tiempo" value="100000" min=0>
+                                    <label for="time">Tiempo</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="show-from" id="show-from"
+                                      placeholder="Mostrar Desde" value="50000" min=0>
+                                    <label for="show-from">Mostrar Desde</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="show-count" id="show-count"
+                                      placeholder="Cantidad a Mostrar" value="10000" min=0>
+                                    <label for="show-count">Cantidad a Mostrar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-auto text-end">
+                        <button type="submit" class="btn btn-outline-primary">Simular</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script lang="js">
+    const calculateTableTotal = (elementsList, totalInput, parseCallback, total_max) => {
+        const total_prob = Array.from(elementsList).reduce((accum, elementInput) => {
+            return accum + parseCallback(elementInput.value);
+        }, 0)
+        totalInput.value = total_prob;
+        if (total_prob !== total_max) {
+            form.reportValidity()
+        }
+    }
+    const form = document.getElementById('data-form');
+
+    const clientsInputs = document.getElementsByName('clients-amounts');
+    const clientsProbTotalInput = document.getElementById('total-clients-amounts-prob');
+
+    const delayInputs = document.getElementsByName('delay');
+    const delayProbTotalInput = document.getElementById('total-delay-prob');
+
+    clientsInputs.forEach((clientInput) => {
+        clientInput.addEventListener('change', (event) => {
+            calculateTableTotal(clientsInputs, clientsProbTotalInput, parseInt, 100)
+        })
+    })
+    clientsProbTotalInput.addEventListener('keydown', (event) => {
+        event.preventDefault();
+        calculateTableTotal(clientsInputs, clientsProbTotalInput, parseInt, 100);
+    })
+
+    delayInputs.forEach((clientInput) => {
+        clientInput.addEventListener('change', (event) => {
+            calculateTableTotal(delayInputs, delayProbTotalInput, parseFloat, 1)
+        })
+    })
+    delayProbTotalInput.addEventListener('keydown', (event) => {
+        event.preventDefault();
+        calculateTableTotal(delayInputs, delayProbTotalInput, parseFloat, 1);
+    })
+
+</script>
+{% endblock %}
