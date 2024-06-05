@@ -29,8 +29,18 @@ class Exponencial():
     def get_next_number(self):
         return self.generate_number()
 
-    def generate_number(self):
-        return (-1/self.frequency)*log(1-self.random_generator.random())
+    def get_next_event(self):
+        random = self.random_generator.random()
+        generated_time = self.generate_number(random)
+        return {
+            'random': random,
+            'generated_time': generated_time,
+        }
+
+    def generate_number(self, random=None):
+        if random is None:
+            random = self.random_generator.random()
+        return (-1/self.frequency)*log(1-random)
 
     def get_expected_frequency(self, interval, sample_size, **kwargs):
         interval_size = (interval[1] - interval[0])

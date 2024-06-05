@@ -1,0 +1,123 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h3>TP4</h3>
+    <form action="{% url 'tp4:simulate' %}" method="post" class="row g-5 mb-5" id="data-form">
+        {% csrf_token %}
+        <div class="col-6">
+            <div class="row card card-body shadow h-100">
+              <div class="col-12">
+                <h4>Demora en la inscripcion (Uniforme)</h4>
+              </div>
+              <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="number" class="form-control" name="inscription-lower-limit" id="inscription-lower-limit"
+                      placeholder="Limite inferior" value="5" min=0>
+                    <label for="inscription-lower-limit">Limite inferior</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="number" class="form-control" name="inscription-upper-limit" id="inscription-upper-limit"
+                      placeholder="Limite superior" value="8" min=0>
+                    <label for="inscription-upper-limit">Limite superior</label>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row card card-body shadow h-100">
+              <div class="col-12">
+                <h4>Llegadas de alumnos (Exp. Negativa)</h4>
+              </div>
+              <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="number" class="form-control" name="arrivals-mean" id="arrivals-mean"
+                      placeholder="Media (min)" value="2" min=0>
+                    <label for="arrivals-mean">Media (min)</label>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row card card-body shadow h-100">
+              <div class="col-12">
+                <h4>Tiempo de Mantenimiento (Uniforme)</h4>
+              </div>
+              <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="number" class="form-control" name="maintenance-lower-limit" id="maintenance-lower-limit"
+                      placeholder="Limite inferior" value="3" min=0>
+                    <label for="maintenance-lower-limit">Limite inferior</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="number" class="form-control" name="maintenance-upper-limit" id="maintenance-upper-limit"
+                      placeholder="Limite superior" value="10" min=0>
+                    <label for="maintenance-upper-limit">Limite superior</label>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="row card card-body shadow h-100">
+              <div class="col-12">
+                <h4>Regreso del Tecnico (Normal)</h4>
+              </div>
+              <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="number" class="form-control" name="return-mean" id="return-mean"
+                      placeholder="Media (min)" value="60" min=0>
+                    <label for="return-mean">Media (min)</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="mb-3 form-floating">
+                    <input type="number" class="form-control" name="return-deviation" id="return-deviation"
+                      placeholder="Desviacion (min)" value="3" min=0>
+                    <label for="return-deviation">Desviacion (min)</label>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row card card-body shadow">
+                <div class="d-flex flex-wrap mt-2">
+                    <div class="col-12">
+                        <h4>Variables de simulacion</h4>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="time" id="time"
+                                      placeholder="Tiempo" value="100000" min=0>
+                                    <label for="time">Tiempo</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="show-from" id="show-from"
+                                      placeholder="Mostrar Desde" value="50000" min=0>
+                                    <label for="show-from">Mostrar Desde</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-3 form-floating">
+                                    <input type="number" class="form-control" name="show-count" id="show-count"
+                                      placeholder="Cantidad a Mostrar" value="10000" min=0>
+                                    <label for="show-count">Cantidad a Mostrar</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-auto text-end">
+                        <button type="submit" class="btn btn-outline-primary">Simular</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

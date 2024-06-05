@@ -20,9 +20,25 @@ class Normal():
             self.number_queue = self.generate_number()
         return self.number_queue.pop()
 
-    def generate_number(self):
-        x1 = self.random_generator.random()
-        x2 = self.random_generator.random()
+    def get_next_event(self):
+        if len(self.number_queue) == 0:
+            self.x1 = self.random_generator.random()
+            self.x2 = self.random_generator.random()
+            self.number_queue = self.generate_number(x1=self.x1, x2=self.x2)
+
+        generated_time = self.number_queue.pop()
+
+        return {
+            'random_1': self.x1,
+            'random_2': self.x2,
+            'generated_time': generated_time,
+        }
+
+    def generate_number(self, x1=None, x2=None):
+        if x1 is None:
+            x1 = self.random_generator.random()
+        if x2 is None:
+            x2 = self.random_generator.random()
         n1 = (sqrt(-2*log(x1))*cos(2*pi*x2))*self.deviation + self.mean
         n2 = (sqrt(-2*log(x1))*sin(2*pi*x2))*self.deviation + self.mean
         return [n2, n1]

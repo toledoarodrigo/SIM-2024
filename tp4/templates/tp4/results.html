@@ -1,0 +1,184 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <h2>TP 4</h2>
+    </div>
+  </div>
+  <div class="container-fluid h-100">
+    <div class="card card-body h-100 shadow my-3 py-4 px-5">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+              <div class="col"><h4>Numeros generados</h4></div>
+              <div class="col-auto">
+                <span class="my-auto" id="pageLegend"></span>
+                <div class="d-block">
+                  <button class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;&laquo;</button>
+                  <button id="prevBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(1)">&laquo;</button>
+                  <button id="nextBtn" class="btn btn-sm btn-outline-secondary" onclick="displayItems(2)">&raquo;</button>
+                  <button id="lastBtn" class="btn btn-sm btn-outline-secondary">&raquo;&raquo;</button>
+                </div>
+              </div>
+              <div class="col-12 h-100 overflow-scroll" style="max-height: 500px;" id="tableContainer">
+                <table class="table h-100 table-striped">
+                    <thead class="sticky-top top-0">
+                    <tr>
+                        <th scope="col">Evento</th>
+                        <th scope="col">Reloj</th>
+                        <th scope="col">RND</th>
+                        <th scope="col">Tiempo Generado</th>
+                        <th scope="col">Prox Llegada de alumno</th>
+                        <th scope="col">RND</th>
+                        <th scope="col">Tiempo Generado</th>
+                        <th scope="col">Fin inscripcion 1</th>
+                        <th scope="col">Fin inscripcion 2</th>
+                        <th scope="col">Fin inscripcion 3</th>
+                        <th scope="col">Fin inscripcion 4</th>
+                        <th scope="col">Fin inscripcion 5</th>
+                        <th scope="col">Fin inscripcion 6</th>
+                        <th scope="col">RND</th>
+                        <th scope="col">Tiempo Generado</th>
+                        <th scope="col">Fin Mantenimiento</th>
+                        <th scope="col">RND 1</th>
+                        <th scope="col">RND 2</th>
+                        <th scope="col">Tiempo generado</th>
+                        <th scope="col">Prox Regreso</th>
+                        <th scope="col">Estado PC 1</th>
+                        <th scope="col">Necesita mantenimiento PC 1</th>
+                        <th scope="col">Estado PC 2</th>
+                        <th scope="col">Necesita mantenimiento PC 2</th>
+                        <th scope="col">Estado PC 3</th>
+                        <th scope="col">Necesita mantenimiento PC 3</th>
+                        <th scope="col">Estado PC 4</th>
+                        <th scope="col">Necesita mantenimiento PC 4</th>
+                        <th scope="col">Estado PC 5</th>
+                        <th scope="col">Necesita mantenimiento PC 5</th>
+                        <th scope="col">Estado PC 6</th>
+                        <th scope="col">Necesita mantenimiento PC 6</th>
+                        <th scope="col">Estado tecnico</th>
+                        <th scope="col">Cola</th>
+                        <th scope="col">Contador Al.</th>
+                        <th scope="col">Contador Al. que se van</th>
+                        <th scope="col">Contador Al. en cola</th>
+                        <th scope="col">Acum. Tiempo espera</th>
+                        <th scope="col">% Al. que se van</th>
+                        <th scope="col">Promedio Espera</th>
+                        <th scope="col">Alumnos</th>
+
+                        <!-- <th scope="col">Estudiantes</th> -->
+                    </tr>
+                    </thead>
+                    <tbody id='results_table'>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="card card-body shadow my-3 py-4 px-5">
+        <div class="container-fluid">
+            <div class="row">
+                <h4>Costos finales</h4>
+                <div class="col-3"">
+                    <span><strong>Total de Almacenamiento:</strong> $</span><span id="total-stock-cost"></span>
+                </div>
+                <div class="col-3"">
+                    <span><strong>Total de Pedido:</strong> $</span><span id="total-restock-cost"></span>
+                </div>
+                <div class="col-3"">
+                    <span><strong>Total por Faltantes:</strong> $</span><span id="total-missing-cost"></span>
+                </div>
+                <div class="col-3"">
+                    <span><strong>Total Acumulado:</strong> $</span><span id="total-cost"></span>
+                </div>
+            </div>
+        </div>
+    </div> -->
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const items = JSON.parse('{{history|safe}}');
+  let showFrom = 0;
+  let showTo = 1000;
+  let pageSize = 1000;
+  let pagesAmount = Math.ceil(items.length/pageSize);
+  document.getElementById("lastBtn").setAttribute("onclick", `displayItems(${pagesAmount})`);
+
+  function toFixed(num, fixed) {
+    var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+    return num.toString().match(re)[0];
+  }
+
+  const displayItems = (page) => {
+    if (page === undefined) {
+      return
+    }
+    const table = document.getElementById('results_table');
+    showFrom = pageSize * (page - 1);
+    showTo = pageSize * page;
+    const paginatedItems = items.slice(showFrom, showTo);
+    results = "";
+    paginatedItems.forEach((item, i) => {
+      students = ""
+      item.students.forEach(({state, queue_arrival_time}) => {
+        students += `${queue_arrival_time ? queue_arrival_time.toFixed(3) : "-"} | ${state ? state : "-"}<br>`
+      })
+      results += `<tr>
+        <th scope="row">${item.event_display}</th>
+        <td>${toFixed(item.time, 3)}</td>
+        <td>${item.arrival.random ? toFixed(item.arrival.random, 2) : "-"}</td>
+        <td>${item.arrival.generated_time ? toFixed(item.arrival.generated_time, 2) : "-"}</td>
+        <td>${item.arrival.next_time ? toFixed(item.arrival.next_time, 2) : "-"}</td>
+        <td>${item.inscription.random ? toFixed(item.inscription.random, 2) : "-"}</td>
+        <td>${item.inscription.generated_time ? toFixed(item.inscription.generated_time, 2) : "-"}</td>
+        <td>${item.inscription.next_time_1 ? toFixed(item.inscription.next_time_1, 2) : "-"}</td>
+        <td>${item.inscription.next_time_2 ? toFixed(item.inscription.next_time_2, 2) : "-"}</td>
+        <td>${item.inscription.next_time_3 ? toFixed(item.inscription.next_time_3, 2) : "-"}</td>
+        <td>${item.inscription.next_time_4 ? toFixed(item.inscription.next_time_4, 2) : "-"}</td>
+        <td>${item.inscription.next_time_5 ? toFixed(item.inscription.next_time_5, 2) : "-"}</td>
+        <td>${item.inscription.next_time_6 ? toFixed(item.inscription.next_time_6, 2) : "-"}</td>
+        <td>${item.maintenance.random ? toFixed(item.maintenance.random, 2) : "-"}</td>
+        <td>${item.maintenance.generated_time ? toFixed(item.maintenance.generated_time, 2) : "-"}</td>
+        <td>${item.maintenance.next_time ? toFixed(item.maintenance.next_time, 2) : "-"}</td>
+        <td>${item.return.random_1 ? toFixed(item.return.random_1, 2) : "-"}</td>
+        <td>${item.return.random_2 ? toFixed(item.return.random_2, 2) : "-"}</td>
+        <td>${item.return.generated_time ? toFixed(item.return.generated_time, 2) : "-"}</td>
+        <td>${item.return.next_time ? toFixed(item.return.next_time, 2) : "-"}</td>
+        <td>${item.computers[0].state}</td>
+        <td>${item.computers[0].needs_maintenance}</td>
+        <td>${item.computers[1].state}</td>
+        <td>${item.computers[1].needs_maintenance}</td>
+        <td>${item.computers[2].state}</td>
+        <td>${item.computers[2].needs_maintenance}</td>
+        <td>${item.computers[3].state}</td>
+        <td>${item.computers[3].needs_maintenance}</td>
+        <td>${item.computers[4].state}</td>
+        <td>${item.computers[4].needs_maintenance}</td>
+        <td>${item.computers[5].state}</td>
+        <td>${item.computers[5].needs_maintenance}</td>
+        <td>${item.technician.state}</td>
+        <td>${item.queue.toString()}</td>
+        <td>${item.total_students.toString()}</td>
+        <td>${item.students_returning.toString()}</td>
+        <td>${item.students_passed_queue.toString()}</td>
+        <td>${item.total_wait_time.toFixed(3)}</td>
+        <td>${item.students_leaving_percentage.toFixed(3)}</td>
+        <td>${item.avg_wait_time.toFixed(3)}</td>
+        <td style="min-width:200px">${students}</td>
+      </tr>`
+    });
+    table.innerHTML = results;
+    document.getElementById("pageLegend").innerHTML = `Pagina ${page} de ${pagesAmount} paginas`;
+    document.getElementById("nextBtn").setAttribute("onclick", `displayItems(${page < pagesAmount ? page + 1 : page})`);
+    document.getElementById("prevBtn").setAttribute("onclick", `displayItems(${page === 1 ? undefined : page - 1})`);
+    document.getElementById("tableContainer").scrollTop = 0;
+  }
+
+  displayItems(1)
+
+</script>
+{% endblock %}
