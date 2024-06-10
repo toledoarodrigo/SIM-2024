@@ -50,8 +50,8 @@ class Computer():
     clean = 'No'
 
     def __init__(self) -> None:
-        self.state = self.free
-        self.needs_maintenance = self.dirty
+        self.state = Computer.free
+        self.needs_maintenance = Computer.dirty
         self.was_maintained = False
         self.client = None
 
@@ -94,7 +94,7 @@ class Student():
     def display(self):
         return {
             'queue_arrival_time': self.queue_arrival_time,
-            'state': self.state.format(computer=self.used_computer + 1),
+            'state': self.state.format(computer=(self.used_computer or 0) + 1),
         }
 
     @staticmethod
@@ -313,8 +313,10 @@ class InscriptionSimulation():
                     picked_computer = None
                     for i in range(len(self.computers)):
                         computer = self.computers[i]
-                        if computer.state == Computer.free:
-                            picked_computer = i
+                        if computer.state != Computer.free:
+                            continue
+                        picked_computer = i
+                        break
                     new_student = Student(
                         Student.inscription, used_computer=picked_computer
                     )
@@ -332,7 +334,7 @@ class InscriptionSimulation():
                         current_time,
                         next_state.inscription
                     )
-                    self.computers[picked_computer].arrives_client(new_student)
+                    computer.arrives_client(new_student)
                 elif next_state.queue < 5:
                     self.students.append(Student(
                         Student.in_queue,
