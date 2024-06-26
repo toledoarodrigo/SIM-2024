@@ -3,11 +3,11 @@
 {% block content %}
 <div class="container">
     <div class="row">
-      <h2>TP 4</h2>
+      <h2>TP 5</h2>
     </div>
   </div>
   <div class="container-fluid h-100">
-    <div class="card card-body h-100 shadow my-3 py-4 px-5">
+    <div class="card card-body shadow my-3 py-4 px-5">
         <div class="container-fluid h-100">
             <div class="row h-100">
               <div class="col"><h4>Numeros generados</h4></div>
@@ -20,14 +20,14 @@
                   <button id="lastBtn" class="btn btn-sm btn-outline-secondary">&raquo;&raquo;</button>
                 </div>
               </div>
-              <div class="col-12 h-100 overflow-scroll" style="max-height: 500px;" id="tableContainer">
-                <table class="table h-100 table-striped">
+              <div class="col-12 h-100 overflow-scroll" style="max-height: 800px;" id="tableContainer">
+                <table class="table h-100 table-hover table-striped">
                     <thead class="sticky-top top-0">
                     <tr>
                       <th class="border-end" scope="row" colspan="2">Gral</th>
                       <th class="border-end" scope="row" colspan="3">Llegada alumno</th>
                       <th class="border-end" scope="row" colspan="8">Fin de inscripcion</th>
-                      <th class="border-end" scope="row" colspan="3">Fin de mantenimiento</th>
+                      <th class="border-end" scope="row" colspan="4">Fin de mantenimiento</th>
                       <th class="border-end" scope="row" colspan="4">Regreso de Tecnico</th>
                       <th class="border-end" scope="row" colspan="2">PC 1</th>
                       <th class="border-end" scope="row" colspan="2">PC 2</th>
@@ -65,6 +65,7 @@
                         <th scope="col">Prox evento 5</th>
                         <th class="border-end" scope="col">Prox evento 6</th>
                         <th scope="col">RND</th>
+                        <th scope="col">A0</th>
                         <th scope="col">Tiempo Generado</th>
                         <th class="border-end" scope="col">Prox. Evento</th>
                         <th scope="col">RND 1</th>
@@ -134,7 +135,55 @@
               </div>
             </div>
         </div>
-    </div>
+      </div>
+      <div class="card card-body shadow my-3 py-4 px-5">
+        <div class="container-fluid h-100">
+          <div class="row h-100">
+            <div class="col"><h4>Tablas de integracion</h4></div>
+            <div>
+              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                {% for key in euler_tables.keys %}
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link{% if forloop.first %} active{% endif %}" id="pills-{{key}}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{key}}" type="button" role="tab" aria-controls="pills-{{key}}" aria-selected="true">{{key}}</button>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+              <div class="tab-content" id="pills-tabContent">
+                {% for key, value in euler_tables.items %}
+                <div class="tab-pane fade{% if forloop.first %} show active{% endif %}" id="pills-{{key}}" role="tabpanel" aria-labelledby="pills-{{key}}-tab" tabindex="0">
+                  <div class="overflow-scroll" style="max-height: 800px;"">
+                    <table class="table h-100 table-hover table-striped">
+                      <thead class="sticky-top top-0">
+                        <tr>
+                          <th class="border-start border-end" scope="row">Tiempo</th>
+                          <th class="border-end" scope="row">A</th>
+                          <th class="border-end" scope="row">dA</th>
+                          <th class="border-end" scope="row">h*dA</th>
+                          <th class="border-end" scope="row">At+1</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in value %}
+                        <tr>
+                          <th class="border-start border-end"  scope="row">{{item.time|floatformat:3}}</th>
+                          <td class="border-end">{{item.y|floatformat:3}}</td>
+                          <td class="border-end">{{item.dy|floatformat:3}}</td>
+                          <td class="border-end">{{item.hdy|floatformat:3}}</td>
+                          <td class="border-end">{{item.y1|floatformat:3}}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 {% endblock %}
 
@@ -188,7 +237,8 @@
         <td>${item.inscription.next_time_5 ? toFixed(item.inscription.next_time_5, 2) : "-"}</td>
         <td>${item.inscription.next_time_6 ? toFixed(item.inscription.next_time_6, 2) : "-"}</td>
         <td>${item.maintenance.random ? toFixed(item.maintenance.random, 2) : "-"}</td>
-        <td>${item.maintenance.generated_time ? toFixed(item.maintenance.generated_time, 2) : "-"}</td>
+        <td>${item.maintenance.A0 ? toFixed(item.maintenance.A0, 2) : "-"}</td>
+        <td>${item.maintenance.generated_time ? toFixed(item.maintenance.generated_time, 4) : "-"}</td>
         <td>${item.maintenance.next_time ? toFixed(item.maintenance.next_time, 2) : "-"}</td>
         <td>${item.return.random_1 ? toFixed(item.return.random_1, 2) : "-"}</td>
         <td>${item.return.random_2 ? toFixed(item.return.random_2, 2) : "-"}</td>

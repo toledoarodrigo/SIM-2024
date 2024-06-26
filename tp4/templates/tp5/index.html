@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="container">
-    <h3>TP4</h3>
-    <form action="{% url 'tp4:simulate' %}" method="post" class="row g-5 mb-5" id="data-form">
+    <h3>TP5</h3>
+    <form action="{% url 'tp4:simulate_tp5' %}" method="post" class="row g-5 mb-5" id="data-form">
         {% csrf_token %}
         <div class="col-6">
             <div class="row card card-body shadow h-100">
@@ -43,20 +43,13 @@
         <div class="col-6">
             <div class="row card card-body shadow h-100">
               <div class="col-12">
-                <h4>Tiempo de Mantenimiento (Uniforme)</h4>
+                <h4>Tiempo de Mantenimiento (Euler)</h4>
               </div>
               <div class="col-12">
                 <div class="mb-3 form-floating">
-                    <input type="number" class="form-control" name="maintenance-lower-limit" id="maintenance-lower-limit"
-                      placeholder="Limite inferior" value="3" min=0>
-                    <label for="maintenance-lower-limit">Limite inferior</label>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="mb-3 form-floating">
-                    <input type="number" class="form-control" name="maintenance-upper-limit" id="maintenance-upper-limit"
-                      placeholder="Limite superior" value="10" min=0>
-                    <label for="maintenance-upper-limit">Limite superior</label>
+                    <input type="number" class="form-control" name="maintenance-step" id="maintenance-step"
+                      placeholder="Salto (h)" value="0.1" min=0 step="0.000001">
+                    <label for="maintenance-step">Salto (h)</label>
                 </div>
               </div>
             </div>
@@ -92,7 +85,7 @@
                             <div class="col-4">
                                 <div class="mb-3 form-floating">
                                     <input type="number" class="form-control" name="time" id="time"
-                                      placeholder="Tiempo" value="10000" min=0>
+                                      placeholder="Tiempo" value="100000" min=0>
                                     <label for="time">Tiempo</label>
                                 </div>
                             </div>

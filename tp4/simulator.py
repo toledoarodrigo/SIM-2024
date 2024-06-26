@@ -95,6 +95,7 @@ class Student():
         return {
             'queue_arrival_time': self.queue_arrival_time,
             'state': self.state.format(computer=(self.used_computer or 0) + 1),
+            'computer': self.used_computer + 1 if self.used_computer is not None else "-"
         }
 
     @staticmethod
@@ -296,6 +297,8 @@ class InscriptionSimulation():
             event_data = getattr(next_state, event_key)
             setattr(next_state, event_key, {
                 **event_data,
+                'random': None,
+                'generated_time': None,
                 f'{time_key}': None
             })
 
@@ -336,10 +339,19 @@ class InscriptionSimulation():
                     )
                     computer.arrives_client(new_student)
                 elif next_state.queue < 5:
-                    self.students.append(Student(
+                    new_student = Student(
                         Student.in_queue,
                         queue_arrival_time=current_time
-                    ))
+                    )
+                    added_within_list = False
+                    for index in range(len(self.students)):
+                        student = self.students[index]
+                        if student is None:
+                            self.students[index] = new_student
+                            added_within_list = True
+                            break
+                    if added_within_list is False:
+                        self.students.append(new_student)
                     # No computer available so you have to go to a queue
                     next_state.queue += 1
                 else:
@@ -350,7 +362,6 @@ class InscriptionSimulation():
             if event_key == inscription_key:
                 next_state.inscription[time_key] = None
                 computer_key = int(time_key.split('next_time_')[-1]) - 1
-                print(computer_key)
                 computer = self.computers[computer_key]
                 inscribed_student = computer.client
                 if next_state.queue > 0:
